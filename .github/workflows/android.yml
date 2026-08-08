@@ -15,14 +15,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Gradle Wrapper
-        run: |
-          mkdir -p gradle/wrapper
-          if [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
-            curl -L -o gradle/wrapper/gradle-wrapper.jar \
-              https://raw.githubusercontent.com/gradle/gradle/v8.10.0/gradle/wrapper/gradle-wrapper.jar
-          fi
-          chmod +x gradlew
+      - name: Make gradlew executable
+        run: chmod +x gradlew
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -33,7 +27,6 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
 
-      # ---- Debug build first ----
       - name: Build Debug APK
         run: ./gradlew assembleDebug
 
@@ -43,7 +36,6 @@ jobs:
           name: app-debug
           path: app/build/outputs/apk/debug/*.apk
 
-      # ---- Release build second ----
       - name: Build Release APK
         run: ./gradlew assembleRelease
 
