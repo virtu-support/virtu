@@ -11,5 +11,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Virtu"
+rootProject.name = "virtu"
 include(":app")
