@@ -1,0 +1,33 @@
+version: 2
+updates:
+  # Gradle dependencies (Android app)
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    reviewers:
+      - "virtualsupport"
+    target-branch: "virtu"
+
+  # GitHub Actions (CI/CD workflows)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "ci"
+      - "dependencies"
+    commit-message:
+      prefix: "ci"
+    reviewers:
+      - "virtualsupport"
+    target-branch: "virtu"
