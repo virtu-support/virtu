@@ -4,7 +4,7 @@ plugins {
 }
 
 // ===== CUSTOM VERSION (NO RESET) =====
-val VERSION_DATE = "2026.08.08"   // Change for new releases
+val VERSION_DATE = "2026.08.09"   // Change for new releases
 val BUGFIX_NUM = 1                // Increment for each bugfix – NEVER RESET
 
 val versionCodeDate = VERSION_DATE.replace(".", "").toInt()
