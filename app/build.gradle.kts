@@ -5,7 +5,7 @@ plugins {
 
 // ===== CUSTOM VERSION (NO RESET) =====
 val VERSION_DATE = "2026.08.09"   // Change for new releases
-val BUGFIX_NUM = 5               // Increment for each bugfix – NEVER RESET
+val BUGFIX_NUM = 6               // Increment for each bugfix – NEVER RESET
 
 val versionCodeDate = VERSION_DATE.replace(".", "").toInt()
 val versionCodeFinal = versionCodeDate * 10000 + BUGFIX_NUM
@@ -55,6 +55,10 @@ android {
         viewBinding = true
     }
 
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.4"
+    }
+
     externalNativeBuild {
         cmake {
             path = file("src/main/cpp/CMakeLists.txt")
@@ -69,5 +73,8 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.cardview:cardview:1.0.0")
+    implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.5.4")
+    implementation("androidx.activity:activity-compose:1.8.0")
     
 }
