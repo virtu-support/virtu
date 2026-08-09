@@ -17,7 +17,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Root container
         val root = FrameLayout(this).apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -26,7 +25,7 @@ class MainActivity : AppCompatActivity() {
             setBackgroundColor(Color.WHITE)
         }
 
-        // Status text (centered)
+        // Center status text (optional – can be removed if you only use the bar's status)
         statusText = TextView(this).apply {
             text = "Ready"
             textSize = 18f
@@ -40,11 +39,13 @@ class MainActivity : AppCompatActivity() {
         }
         root.addView(statusText)
 
-        // Floating bottom bar
+        // Floating bottom bar (Material style)
         val floatingBar = FloatingBottomBar(this).apply {
             startButton.setOnClickListener { startVm() }
             stopButton.setOnClickListener { stopVm() }
             testButton.setOnClickListener { testJni() }
+            // Sync status text with the bar's internal status
+            statusText.text = this.statusText.text
         }
         root.addView(floatingBar)
 
@@ -60,6 +61,8 @@ class MainActivity : AppCompatActivity() {
             startService(intent)
         }
         statusText.text = "VM running"
+        // Also update the bar's status if you want to keep them in sync
+        // (You'll need to expose a method in FloatingBottomBar for that)
     }
 
     private fun stopVm() {
