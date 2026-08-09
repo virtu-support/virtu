@@ -28,8 +28,8 @@ class FloatingBottomBar(context: Context) : FrameLayout(context) {
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
-        // Set gravity to bottom (imported)
-        gravity = Gravity.BOTTOM
+        // Use setGravity (property 'gravity' is not available)
+        setGravity(Gravity.BOTTOM)
 
         // ---- Card (Surface) ----
         val card = MaterialCardView(context).apply {
@@ -46,13 +46,11 @@ class FloatingBottomBar(context: Context) : FrameLayout(context) {
                 width = maxWidthPx
             }
 
-            // Surface attributes
             radius = 34f
             elevation = 10f
             val bgColor = Color.argb(217, 255, 255, 255)
             setCardBackgroundColor(bgColor)
 
-            // Border stroke (1dp, subtle)
             val strokeWidth = (1 * resources.displayMetrics.density).toInt()
             val borderColor = Color.argb(30, 0, 0, 0)
             val drawable = GradientDrawable().apply {
@@ -86,7 +84,6 @@ class FloatingBottomBar(context: Context) : FrameLayout(context) {
             )
         }
 
-        // Helper to create each tile
         fun createTile(iconRes: Int, label: String): LinearLayout {
             return LinearLayout(context).apply {
                 orientation = LinearLayout.VERTICAL
@@ -134,7 +131,6 @@ class FloatingBottomBar(context: Context) : FrameLayout(context) {
         container.addView(row)
         card.addView(container)
 
-        // Add card to root
         addView(card)
 
         // ---- Status text below the card ----
@@ -156,7 +152,6 @@ class FloatingBottomBar(context: Context) : FrameLayout(context) {
         (card.layoutParams as FrameLayout.LayoutParams).bottomMargin = (40 * resources.displayMetrics.density).toInt()
     }
 
-    // Highlight selected tile
     fun setSelected(selected: String) {
         val items = listOf(startTile to "Start", stopTile to "Stop", testTile to "Test")
         items.forEach { (tile, label) ->
