@@ -27,6 +27,9 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
 
+      - name: Clean build cache
+        run: ./gradlew clean --no-build-cache
+
       - name: Build Debug APK
         run: ./gradlew assembleDebug
         env:
