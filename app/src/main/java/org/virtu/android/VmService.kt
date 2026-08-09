@@ -70,9 +70,9 @@ class VmService : Service() {
 
     private fun buildNotification(): Notification {
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Virtu")
+            .setContentTitle("virtu")
             .setContentText("VM is running")
-            .setSmallIcon(android.R.drawable.ic_menu_agenda)
+            .setSmallIcon(android.R.drawable.ic_launcher)
             .build()
     }
 }
