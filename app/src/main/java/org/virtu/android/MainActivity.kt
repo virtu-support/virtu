@@ -1,64 +1,57 @@
 package org.virtu.android
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.view.ViewGroup
-import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
-class MainActivity : AppCompatActivity() {
-
-    private lateinit var floatingBar: FloatingBottomBar
+class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val root = FrameLayout(this).apply {
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            setBackgroundColor(Color.WHITE)
+        setContent {
+            MaterialTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color.White
+                ) {
+                    FloatingBottomBar(
+                        selectedAction = "Start",
+                        onActionClick = { action ->
+                            when (action) {
+                                "Start" -> startVm()
+                                "Stop" -> stopVm()
+                                "Test" -> testJni()
+                            }
+                        }
+                    )
+                }
+            }
         }
-
-        floatingBar = FloatingBottomBar(this).apply {
-            onStartClick = { startVm() }
-            onStopClick = { stopVm() }
-            onTestClick = { testJni() }
-
-            // Optionally set initial selected state
-            setSelected("Start") // or "Stop" / "Test"
-        }
-        root.addView(floatingBar)
-
-        setContentView(root)
     }
 
     private fun startVm() {
-        floatingBar.setSelected("Start")
-        floatingBar.statusText.text = "Starting VM..."
         val intent = Intent(this, VmService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent)
         } else {
             startService(intent)
         }
-        floatingBar.statusText.text = "VM running"
     }
 
     private fun stopVm() {
-        floatingBar.setSelected("Stop")
-        floatingBar.statusText.text = "Stopping VM..."
         stopService(Intent(this, VmService::class.java))
-        floatingBar.statusText.text = "VM stopped"
     }
 
     private fun testJni() {
-        floatingBar.setSelected("Test")
         val engine = VmEngine()
-        val result = engine.runCommand("uname -a")
-        floatingBar.statusText.text = "JNI Test: $result"
+        engine.runCommand("uname -a")
     }
 }
