@@ -60,7 +60,7 @@ The resulting APK will be located at:
 app/build/outputs/apk/debug/app-debug.apk
 ```
 
-Install the APK
+### Install the APK
 
 Copy the APK to your device and install it:
 
