@@ -15,8 +15,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Remove problematic folder (safety net)
-        run: rm -rf app/src/main/res/values-night-v8
+      - name: Remove problematic resources
+        run: |
+          find . -type d -name "values-night-v8" -exec rm -rf {} +
+          rm -rf app/build
 
       - name: Make gradlew executable
         run: chmod +x gradlew
