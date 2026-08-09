@@ -11,9 +11,11 @@ import com.google.android.material.card.MaterialCardView
 
 class FloatingBottomBar(context: Context) : MaterialCardView(context) {
 
-    val startButton: MaterialButton
-    val stopButton: MaterialButton
-    val testButton: MaterialButton
+    // Use lateinit to avoid initialization errors
+    lateinit var startButton: MaterialButton
+    lateinit var stopButton: MaterialButton
+    lateinit var testButton: MaterialButton
+
     val statusText: TextView
 
     init {
@@ -53,7 +55,7 @@ class FloatingBottomBar(context: Context) : MaterialCardView(context) {
         }
         container.addView(title)
 
-        // Status text (updates from MainActivity)
+        // Status text
         statusText = TextView(context).apply {
             text = "Ready"
             textSize = 14f
@@ -75,10 +77,10 @@ class FloatingBottomBar(context: Context) : MaterialCardView(context) {
             ).apply { topMargin = 16 }
         }
 
-        // Start button
+        // Start button (play icon)
         startButton = MaterialButton(context).apply {
             text = "Start"
-            startButton.icon = context.getDrawable(com.google.android.material.R.drawable.material_ic_play_arrow_black_24dp) // or use vector
+            icon = context.getDrawable(android.R.drawable.ic_media_play)
             iconGravity = MaterialButton.ICON_GRAVITY_START
             layoutParams = LinearLayout.LayoutParams(
                 0,
@@ -92,7 +94,7 @@ class FloatingBottomBar(context: Context) : MaterialCardView(context) {
         }
         buttonRow.addView(startButton)
 
-        // Stop button
+        // Stop button (close/cancel icon)
         stopButton = MaterialButton(context).apply {
             text = "Stop"
             icon = context.getDrawable(android.R.drawable.ic_menu_close_clear_cancel)
@@ -109,7 +111,7 @@ class FloatingBottomBar(context: Context) : MaterialCardView(context) {
         }
         buttonRow.addView(stopButton)
 
-        // Test button
+        // Test button (manage icon)
         testButton = MaterialButton(context).apply {
             text = "Test"
             icon = context.getDrawable(android.R.drawable.ic_menu_manage)
