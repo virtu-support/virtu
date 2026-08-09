@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.google.android.material.card.MaterialCardView
 
 class FloatingBottomBar(context: Context) : FrameLayout(context) {
 
@@ -27,11 +28,11 @@ class FloatingBottomBar(context: Context) : FrameLayout(context) {
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
+        // Set gravity to bottom (imported)
         gravity = Gravity.BOTTOM
 
         // ---- Card (Surface) ----
         val card = MaterialCardView(context).apply {
-            // External margin: 16dp left + right (applied via layout params)
             val marginPx = (16 * resources.displayMetrics.density).toInt()
             val maxWidthPx = (420 * resources.displayMetrics.density).toInt()
             val heightPx = (68 * resources.displayMetrics.density).toInt()
@@ -41,21 +42,13 @@ class FloatingBottomBar(context: Context) : FrameLayout(context) {
                 heightPx
             ).apply {
                 gravity = Gravity.CENTER
-                // Set margins to avoid touching edges
                 setMargins(marginPx, 0, marginPx, 0)
-                // Max width: we use a FrameLayout with center gravity, but we need to limit width.
-                // Since we set MATCH_PARENT and margins, on large screens the card still stretches.
-                // To enforce max width, we wrap the card in a container with max width.
-                // However, we can simply set the card's width to a fixed max width and center it.
-                // We'll set width to maxWidthPx and center horizontally.
                 width = maxWidthPx
-                // Also center the card: we set gravity to CENTER in the parent.
             }
 
             // Surface attributes
             radius = 34f
             elevation = 10f
-            // Background with alpha 0.85 (217/255)
             val bgColor = Color.argb(217, 255, 255, 255)
             setCardBackgroundColor(bgColor)
 
@@ -83,7 +76,7 @@ class FloatingBottomBar(context: Context) : FrameLayout(context) {
             )
         }
 
-        // Row for three tiles (like the Row in Compose)
+        // Row for three tiles
         val row = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER
@@ -93,7 +86,7 @@ class FloatingBottomBar(context: Context) : FrameLayout(context) {
             )
         }
 
-        // Helper to create each tile (icon + label)
+        // Helper to create each tile
         fun createTile(iconRes: Int, label: String): LinearLayout {
             return LinearLayout(context).apply {
                 orientation = LinearLayout.VERTICAL
@@ -122,7 +115,6 @@ class FloatingBottomBar(context: Context) : FrameLayout(context) {
                 addView(text)
                 isClickable = true
                 isFocusable = true
-                // Simple ripple-like effect from default button background
                 background = context.getDrawable(android.R.drawable.btn_default)
             }
         }
@@ -159,7 +151,6 @@ class FloatingBottomBar(context: Context) : FrameLayout(context) {
                 bottomMargin = (8 * resources.displayMetrics.density).toInt()
             }
         }
-        // Add status text with bottom margin
         addView(statusText)
         // Give card some bottom margin so it doesn't overlap status text
         (card.layoutParams as FrameLayout.LayoutParams).bottomMargin = (40 * resources.displayMetrics.density).toInt()
