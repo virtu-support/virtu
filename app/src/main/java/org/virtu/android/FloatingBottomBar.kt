@@ -78,7 +78,7 @@ class FloatingBottomBar(context: Context) : MaterialCardView(context) {
         // Start button
         startButton = MaterialButton(context).apply {
             text = "Start"
-            icon = context.getDrawable(com.google.android.material.R.drawable.material_ic_play_arrow_black_24dp) // or use vector
+            startButton.icon = context.getDrawable(com.google.android.material.R.drawable.material_ic_play_arrow_black_24dp) // or use vector
             iconGravity = MaterialButton.ICON_GRAVITY_START
             layoutParams = LinearLayout.LayoutParams(
                 0,
