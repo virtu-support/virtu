@@ -40,8 +40,8 @@ class MainActivity : AppCompatActivity() {
         }
         root.addView(statusText)
 
-        // Floating bar
-        val floatingBar = FloatingBar(this).apply {
+        // Floating bottom bar
+        val floatingBar = FloatingBottomBar(this).apply {
             startButton.setOnClickListener { startVm() }
             stopButton.setOnClickListener { stopVm() }
             testButton.setOnClickListener { testJni() }
