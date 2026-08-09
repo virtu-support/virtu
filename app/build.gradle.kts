@@ -5,7 +5,7 @@ plugins {
 
 // ===== CUSTOM VERSION (NO RESET) =====
 val VERSION_DATE = "2026.08.09"   // Change for new releases
-val BUGFIX_NUM = 3               // Increment for each bugfix – NEVER RESET
+val BUGFIX_NUM = 4               // Increment for each bugfix – NEVER RESET
 
 val versionCodeDate = VERSION_DATE.replace(".", "").toInt()
 val versionCodeFinal = versionCodeDate * 10000 + BUGFIX_NUM
@@ -69,4 +69,5 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.cardview:cardview:1.0.0")
+    
 }
