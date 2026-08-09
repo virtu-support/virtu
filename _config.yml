@@ -1,0 +1,14 @@
+title: virtu
+description: Android ARM64 virtual machine app – run Windows, macOS, and Linux on your phone.
+url: https://virtu.org
+baseurl: ""
+
+# Theme
+theme: minima
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# Logo (optional)
+logo: /logo/logo.png
