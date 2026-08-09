@@ -26,7 +26,7 @@ cd virtu
 ./gradlew assembleDebug
 ```
 
-Download
+### Download
 
 Get the latest APK from GitHub Releases.
 
