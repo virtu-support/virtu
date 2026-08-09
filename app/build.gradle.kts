@@ -60,6 +60,13 @@ android {
         compose = true
     }
 
+    packagingOptions {
+        resources {
+            excludes += "**/values-night-v8/*"
+        }
+    }
+}
+
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.4"
     }
