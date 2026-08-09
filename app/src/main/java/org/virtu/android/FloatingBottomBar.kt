@@ -3,23 +3,28 @@ package org.virtu.android
 import android.content.Context
 import android.graphics.Color
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 
 class FloatingBottomBar(context: Context) : MaterialCardView(context) {
 
-    // Use lateinit to avoid initialization errors
-    lateinit var startButton: MaterialButton
-    lateinit var stopButton: MaterialButton
-    lateinit var testButton: MaterialButton
-
+    // Tiles and status
+    private val startTile: LinearLayout
+    private val stopTile: LinearLayout
+    private val testTile: LinearLayout
     val statusText: TextView
 
+    // Click listeners
+    var onStartClick: (() -> Unit)? = null
+    var onStopClick: (() -> Unit)? = null
+    var onTestClick: (() -> Unit)? = null
+
     init {
-        // Card setup
+        // Card setup – matches Compose Surface
         layoutParams = LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
@@ -27,110 +32,117 @@ class FloatingBottomBar(context: Context) : MaterialCardView(context) {
             gravity = Gravity.BOTTOM
             setMargins(32, 0, 32, 32)
         }
-        radius = 28f
-        elevation = 12f
-        setCardBackgroundColor(Color.WHITE)
-        isClickable = false
+        radius = 34f                     // RoundedCornerShape(34.dp)
+        elevation = 10f                  // shadowElevation = 10.dp
+        setCardBackgroundColor(Color.WHITE) // background.copy(alpha = 0.85f) – we use white with slight transparency
+        // For alpha: we'll set a translucent color (optional)
+        // setCardBackgroundColor(Color.argb(217, 255, 255, 255)) // 85% white
+
+        // Border (like BorderStroke)
+        // MaterialCardView doesn't have a direct border, so we'll use a stroke drawable or a background.
+        // We'll skip border to keep it simple.
 
         // Main container (vertical)
         val container = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(24, 20, 24, 20)
+            gravity = Gravity.CENTER
+            setPadding(16, 12, 16, 12)
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
         }
 
-        // Title
-        val title = TextView(context).apply {
-            text = "virtu"
-            textSize = 18f
-            setTextColor(Color.BLACK)
-            typeface = android.graphics.Typeface.DEFAULT_BOLD
-            layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-        }
-        container.addView(title)
-
-        // Status text
-        statusText = TextView(context).apply {
-            text = "Ready"
-            textSize = 14f
-            setTextColor(Color.GRAY)
-            layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply { topMargin = 4 }
-        }
-        container.addView(statusText)
-
-        // Button row
-        val buttonRow = LinearLayout(context).apply {
+        // Row for three items (Start, Stop, Test) – like the Row in Compose
+        val row = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply { topMargin = 16 }
+            )
         }
 
-        // Start button (play icon)
-        startButton = MaterialButton(context).apply {
-            text = "Start"
-            icon = context.getDrawable(android.R.drawable.ic_media_play)
-            iconGravity = MaterialButton.ICON_GRAVITY_START
-            layoutParams = LinearLayout.LayoutParams(
-                0,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                1f
-            ).apply { setMargins(0, 0, 16, 0) }
-            backgroundTintList = android.content.res.ColorStateList.valueOf(
-                context.getColor(com.google.android.material.R.color.design_default_color_primary)
-            )
-            setTextColor(Color.WHITE)
+        // Helper to create each item (like the Column in Compose)
+        fun createItem(iconRes: Int, label: String): LinearLayout {
+            return LinearLayout(context).apply {
+                orientation = LinearLayout.VERTICAL
+                gravity = Gravity.CENTER
+                layoutParams = LinearLayout.LayoutParams(
+                    0,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    1f
+                )
+                // Icon
+                val icon = ImageView(context).apply {
+                    setImageResource(iconRes)
+                    setColorFilter(Color.DKGRAY) // default unselected color
+                    layoutParams = LinearLayout.LayoutParams(32, 32)
+                }
+                addView(icon)
+                // Text
+                val text = TextView(context).apply {
+                    this.text = label
+                    textSize = 11f
+                    setTextColor(Color.DKGRAY)
+                    typeface = android.graphics.Typeface.DEFAULT
+                    layoutParams = LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                    ).apply { topMargin = 4 }
+                }
+                addView(text)
+                // Clickable
+                isClickable = true
+                isFocusable = true
+                // Selected state handling will be done via listeners
+            }
         }
-        buttonRow.addView(startButton)
 
-        // Stop button (close/cancel icon)
-        stopButton = MaterialButton(context).apply {
-            text = "Stop"
-            icon = context.getDrawable(android.R.drawable.ic_menu_close_clear_cancel)
-            iconGravity = MaterialButton.ICON_GRAVITY_START
-            layoutParams = LinearLayout.LayoutParams(
-                0,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                1f
-            ).apply { setMargins(0, 0, 16, 0) }
-            backgroundTintList = android.content.res.ColorStateList.valueOf(
-                context.getColor(android.R.color.holo_red_dark)
-            )
-            setTextColor(Color.WHITE)
-        }
-        buttonRow.addView(stopButton)
+        startTile = createItem(android.R.drawable.ic_media_play, "Start")
+        stopTile = createItem(android.R.drawable.ic_menu_close_clear_cancel, "Stop")
+        testTile = createItem(android.R.drawable.ic_menu_manage, "Test")
 
-        // Test button (manage icon)
-        testButton = MaterialButton(context).apply {
-            text = "Test"
-            icon = context.getDrawable(android.R.drawable.ic_menu_manage)
-            iconGravity = MaterialButton.ICON_GRAVITY_START
-            layoutParams = LinearLayout.LayoutParams(
-                0,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                1f
-            )
-            backgroundTintList = android.content.res.ColorStateList.valueOf(
-                context.getColor(android.R.color.holo_orange_dark)
-            )
-            setTextColor(Color.WHITE)
-        }
-        buttonRow.addView(testButton)
+        // Click listeners
+        startTile.setOnClickListener { onStartClick?.invoke() }
+        stopTile.setOnClickListener { onStopClick?.invoke() }
+        testTile.setOnClickListener { onTestClick?.invoke() }
 
-        container.addView(buttonRow)
+        // Add tiles to row
+        row.addView(startTile)
+        row.addView(stopTile)
+        row.addView(testTile)
 
-        // Add container to card
+        container.addView(row)
         addView(container)
+
+        // Status text (optional, we can add it below or above)
+        // For now we'll keep it as a separate field that can be updated externally.
+        statusText = TextView(context).apply {
+            text = "Ready"
+            textSize = 12f
+            setTextColor(Color.GRAY)
+            gravity = Gravity.CENTER
+            layoutParams = LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply {
+                gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+                setMargins(0, 0, 0, 8)
+            }
+        }
+        addView(statusText)
+    }
+
+    // Method to update selected state (like in Compose)
+    fun setSelected(selected: String) {
+        val items = listOf(startTile to "Start", stopTile to "Stop", testTile to "Test")
+        items.forEach { (tile, label) ->
+            val icon = tile.getChildAt(0) as ImageView
+            val text = tile.getChildAt(1) as TextView
+            val isSelected = label == selected
+            icon.setColorFilter(if (isSelected) Color.parseColor("#6200EE") else Color.DKGRAY)
+            text.setTextColor(if (isSelected) Color.parseColor("#6200EE") else Color.DKGRAY)
+        }
     }
 }
