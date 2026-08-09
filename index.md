@@ -32,4 +32,4 @@ Get the latest APK from GitHub Releases.
 
 ---
 
-Made with care by the VirtuSupport team.
+### Made with care by the VirtuSupport team.
