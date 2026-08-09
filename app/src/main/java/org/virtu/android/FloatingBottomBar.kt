@@ -23,13 +23,11 @@ class FloatingBottomBar(context: Context) : FrameLayout(context) {
     var onTestClick: (() -> Unit)? = null
 
     init {
-        // Root FrameLayout – fills width, centers its content
+        // Root FrameLayout – fills the parent, children will be placed with gravity in their layout params
         layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.MATCH_PARENT
         )
-        // Use setGravity (property 'gravity' is not available)
-        setGravity(Gravity.BOTTOM)
 
         // ---- Card (Surface) ----
         val card = MaterialCardView(context).apply {
@@ -37,13 +35,13 @@ class FloatingBottomBar(context: Context) : FrameLayout(context) {
             val maxWidthPx = (420 * resources.displayMetrics.density).toInt()
             val heightPx = (68 * resources.displayMetrics.density).toInt()
 
+            // Place the card at the bottom, centered horizontally
             layoutParams = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
+                maxWidthPx,
                 heightPx
             ).apply {
-                gravity = Gravity.CENTER
+                gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
                 setMargins(marginPx, 0, marginPx, 0)
-                width = maxWidthPx
             }
 
             radius = 34f
@@ -131,6 +129,7 @@ class FloatingBottomBar(context: Context) : FrameLayout(context) {
         container.addView(row)
         card.addView(container)
 
+        // Add card to root
         addView(card)
 
         // ---- Status text below the card ----
@@ -144,12 +143,11 @@ class FloatingBottomBar(context: Context) : FrameLayout(context) {
                 ViewGroup.LayoutParams.WRAP_CONTENT
             ).apply {
                 gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
-                bottomMargin = (8 * resources.displayMetrics.density).toInt()
+                // Position it just below the card
+                topMargin = (68 * resources.displayMetrics.density).toInt() + (16 * resources.displayMetrics.density).toInt()
             }
         }
         addView(statusText)
-        // Give card some bottom margin so it doesn't overlap status text
-        (card.layoutParams as FrameLayout.LayoutParams).bottomMargin = (40 * resources.displayMetrics.density).toInt()
     }
 
     fun setSelected(selected: String) {
