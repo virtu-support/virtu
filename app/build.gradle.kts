@@ -60,13 +60,6 @@ android {
         compose = true
     }
 
-    packagingOptions {
-        resources {
-            excludes += "**/values-night-v8/*"
-        }
-    }
-}
-
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.4"
     }
@@ -74,6 +67,12 @@ android {
     externalNativeBuild {
         cmake {
             path = file("src/main/cpp/CMakeLists.txt")
+        }
+    }
+
+    packagingOptions {
+        resources {
+            excludes += "**/values-night-v8/*"
         }
     }
 }
