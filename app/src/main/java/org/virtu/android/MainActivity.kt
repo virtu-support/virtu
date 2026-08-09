@@ -4,15 +4,13 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var statusText: TextView
+    private lateinit var floatingBar: FloatingBottomBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,27 +23,13 @@ class MainActivity : AppCompatActivity() {
             setBackgroundColor(Color.WHITE)
         }
 
-        // Center status text (optional – can be removed if you only use the bar's status)
-        statusText = TextView(this).apply {
-            text = "Ready"
-            textSize = 18f
-            setTextColor(Color.BLACK)
-            gravity = Gravity.CENTER
-            layoutParams = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                Gravity.CENTER
-            )
-        }
-        root.addView(statusText)
+        floatingBar = FloatingBottomBar(this).apply {
+            onStartClick = { startVm() }
+            onStopClick = { stopVm() }
+            onTestClick = { testJni() }
 
-        // Floating bottom bar (Material style)
-        val floatingBar = FloatingBottomBar(this).apply {
-            startButton.setOnClickListener { startVm() }
-            stopButton.setOnClickListener { stopVm() }
-            testButton.setOnClickListener { testJni() }
-            // Sync status text with the bar's internal status
-            statusText.text = this.statusText.text
+            // Optionally set initial selected state
+            setSelected("Start") // or "Stop" / "Test"
         }
         root.addView(floatingBar)
 
@@ -53,27 +37,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startVm() {
-        statusText.text = "Starting VM..."
+        floatingBar.setSelected("Start")
+        floatingBar.statusText.text = "Starting VM..."
         val intent = Intent(this, VmService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent)
         } else {
             startService(intent)
         }
-        statusText.text = "VM running"
-        // Also update the bar's status if you want to keep them in sync
-        // (You'll need to expose a method in FloatingBottomBar for that)
+        floatingBar.statusText.text = "VM running"
     }
 
     private fun stopVm() {
-        statusText.text = "Stopping VM..."
+        floatingBar.setSelected("Stop")
+        floatingBar.statusText.text = "Stopping VM..."
         stopService(Intent(this, VmService::class.java))
-        statusText.text = "VM stopped"
+        floatingBar.statusText.text = "VM stopped"
     }
 
     private fun testJni() {
+        floatingBar.setSelected("Test")
         val engine = VmEngine()
         val result = engine.runCommand("uname -a")
-        statusText.text = "JNI Test: $result"
+        floatingBar.statusText.text = "JNI Test: $result"
     }
 }
