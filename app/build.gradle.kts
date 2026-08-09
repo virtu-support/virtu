@@ -3,14 +3,18 @@ plugins {
     id("org.jetbrains.kotlin.android") version "1.9.22"
 }
 
-// ===== CUSTOM VERSION (NO RESET) =====
-val VERSION_DATE = "2026.08.09"   // Change for new releases
-val BUGFIX_NUM = 6               // Increment for each bugfix – NEVER RESET
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
+// ---- Auto date from system clock ----
+val VERSION_DATE = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
+
+// ---- Bugfix number from environment variable (GitHub run number) ----
+val bugfixNum = (System.getenv("BUGFIX_NUM") ?: "0").toInt()
 
 val versionCodeDate = VERSION_DATE.replace(".", "").toInt()
-val versionCodeFinal = versionCodeDate * 10000 + BUGFIX_NUM
-val versionNameFinal = "$VERSION_DATE+${BUGFIX_NUM.toString().padStart(4, '0')}"
-// =======================================
+val versionCodeFinal = versionCodeDate * 10000 + bugfixNum
+val versionNameFinal = "$VERSION_DATE+${bugfixNum.toString().padStart(4, '0')}"
 
 android {
     namespace = "org.virtu.android"
@@ -53,6 +57,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        compose = true
     }
 
     composeOptions {
@@ -73,8 +78,10 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.cardview:cardview:1.0.0")
+
+    // Compose dependencies
+    implementation("androidx.compose.ui:ui:1.5.4")
     implementation("androidx.compose.material3:material3:1.1.2")
     implementation("androidx.compose.ui:ui-tooling-preview:1.5.4")
     implementation("androidx.activity:activity-compose:1.8.0")
-    
 }
