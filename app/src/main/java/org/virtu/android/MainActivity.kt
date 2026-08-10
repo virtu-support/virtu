@@ -3,6 +3,7 @@ package org.virtu.android
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -11,10 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
@@ -26,21 +25,20 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Enable edge-to-edge layout
+        // Enable edge-to-edge layout (content draws behind system bars)
         enableEdgeToEdge()
 
         setContent {
-            // Use dynamic background color from Material You
+            // Dynamic background color
             val backgroundColor = MaterialTheme.colorScheme.background
 
-            // Update status bar and navigation bar colors to match the background
+            // Update status and navigation bar colors to match background (they'll be hidden anyway)
             val view = LocalView.current
             SideEffect {
                 val window = (view.context as ComponentActivity).window
                 window.statusBarColor = backgroundColor.toArgb()
                 window.navigationBarColor = backgroundColor.toArgb()
-
-                // Set light/dark icons based on background luminance
+                // Make icons light/dark according to background
                 val insetsController = WindowCompat.getInsetsController(window, view)
                 val luminance = backgroundColor.red * 0.299 + backgroundColor.green * 0.587 + backgroundColor.blue * 0.114
                 insetsController.isAppearanceLightStatusBars = luminance > 0.5
@@ -54,7 +52,7 @@ class MainActivity : ComponentActivity() {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .navigationBarsPadding()
+                        .navigationBarsPadding()  // Keeps the floating bar above the nav bar if it reappears
                 ) {
                     FloatingBottomBar(
                         selectedAction = selectedAction,
@@ -70,6 +68,20 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+        // Hide system bars for fullscreen immersive mode
+        hideSystemBars()
+    }
+
+    private fun hideSystemBars() {
+        window.decorView.systemUiVisibility = (
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        )
     }
 
     private fun startVm() {
