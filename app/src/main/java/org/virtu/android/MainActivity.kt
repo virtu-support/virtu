@@ -1,5 +1,6 @@
 package org.virtu.android
 
+import org.virtu.android.BuildConfig
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -60,7 +61,7 @@ class MainActivity : ComponentActivity() {
                                         modifier = Modifier
                                             .size(8.dp)
                                             .background(
-                                                if (statusText == "VM running") Color.Green else Color.Grey,
+                                                if (statusText == "VM running") Color.Green else Color.Red,
                                                 shape = MaterialTheme.shapes.small
                                             )
                                     )
