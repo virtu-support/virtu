@@ -41,13 +41,13 @@ fun HomeScreen(
     ) {
         items(vms) { vm ->
             Box(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.CenterHorizontally
             ) {
                 VmCard(
                     vm = vm,
                     onAction = onVmAction,
                     modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
                         .widthIn(max = 500.dp)
                         .padding(horizontal = 16.dp)
                 )
