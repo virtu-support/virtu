@@ -63,7 +63,8 @@ class MainActivity : ComponentActivity() {
                                 "Stop" -> stopVm()
                                 "Test" -> testJni()
                             }
-                        }
+                        },
+                        modifier = Modifier.align(Alignment.BottomCenter)   // Forces bottom alignment
                     )
                 }
             }
