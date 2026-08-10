@@ -3,6 +3,10 @@ package org.virtu.android
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -11,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -23,9 +26,9 @@ fun FloatingBottomBar(
     val colorScheme = MaterialTheme.colorScheme
 
     val actions = listOf(
-        Triple("Start", R.drawable.ic_media_play, "Start"),
-        Triple("Stop", android.R.drawable.ic_menu_close_clear_cancel, "Stop"),
-        Triple("Test", android.R.drawable.ic_menu_manage, "Test")
+        Triple("Start", Icons.Default.PlayArrow, "Start"),
+        Triple("Stop", Icons.Default.Stop, "Stop"),
+        Triple("Test", Icons.Default.Build, "Test")
     )
 
     Box(
@@ -36,11 +39,11 @@ fun FloatingBottomBar(
     ) {
         Surface(
             modifier = Modifier
-                .wrapContentWidth()          // NOT fillMaxWidth – only as wide as needed
-                .padding(horizontal = 16.dp) // Margin from screen edges
-                .widthIn(max = 420.dp)       // Max width, but can be smaller
+                .wrapContentWidth()
+                .padding(horizontal = 16.dp)
+                .widthIn(max = 420.dp)
                 .height(64.dp)
-                .padding(horizontal = 8.dp), // Internal spacing
+                .padding(horizontal = 8.dp),
             color = colorScheme.surface.copy(alpha = 0.92f),
             shape = RoundedCornerShape(32.dp),
             shadowElevation = 8.dp,
@@ -54,7 +57,7 @@ fun FloatingBottomBar(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                actions.forEach { (label, iconRes, action) ->
+                actions.forEach { (label, icon, action) ->
                     val selected = selectedAction == action
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -65,7 +68,7 @@ fun FloatingBottomBar(
                             .clickable { onActionClick(action) }
                     ) {
                         Icon(
-                            imageVector = ImageVector.vectorResource(iconRes),
+                            imageVector = icon,
                             contentDescription = label,
                             tint = if (selected) colorScheme.primary else colorScheme.onSurface.copy(alpha = 0.7f),
                             modifier = Modifier.size(24.dp)
