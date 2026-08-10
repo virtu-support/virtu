@@ -29,7 +29,6 @@ fun HomeScreen(
     onVmAction: (action: String, vmId: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Sample VM data (replace with real data later)
     val vms = listOf(
         Vm(id = 1, name = "Ubuntu", lastRun = "2026-08-10 14:30", status = "stopped"),
         Vm(id = 2, name = "Windows 10", lastRun = "2026-08-09 22:15", status = "running"),
@@ -44,13 +43,15 @@ fun HomeScreen(
     ) {
         items(vms) { vm ->
             Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.fillMaxWidth()
             ) {
                 VmCard(
                     vm = vm,
                     onAction = onVmAction,
-                    modifier = Modifier.widthIn(max = 500.dp)
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .widthIn(max = 500.dp)
+                        .padding(horizontal = 16.dp)
                 )
             }
         }
@@ -65,9 +66,7 @@ fun VmCard(
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier
-            .wrapContentWidth()
-            .padding(horizontal = 16.dp),
+        modifier = modifier,
         shape = RoundedCornerShape(28.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(
@@ -80,7 +79,6 @@ fun VmCard(
                 .padding(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Image placeholder
             Surface(
                 modifier = Modifier.size(52.dp),
                 shape = RoundedCornerShape(14.dp),
@@ -97,7 +95,6 @@ fun VmCard(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // VM info
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = vm.name,
@@ -120,7 +117,6 @@ fun VmCard(
                 )
             }
 
-            // Action buttons (rounded)
             Row {
                 listOf(
                     "play" to Icons.Default.PlayArrow,
