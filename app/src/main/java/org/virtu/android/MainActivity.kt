@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
+import androidx.comze.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
@@ -50,7 +50,6 @@ class MainActivity : ComponentActivity() {
 
                 Box(modifier = Modifier.fillMaxSize()) {
                     Column(modifier = Modifier.fillMaxSize()) {
-                        // Top App Bar
                         TopAppBar(
                             title = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -79,7 +78,6 @@ class MainActivity : ComponentActivity() {
                             }
                         )
 
-                        // Content area
                         Box(
                             modifier = Modifier
                                 .weight(1f)
@@ -119,7 +117,6 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    // Floating Bottom Bar (overlaid at the bottom)
                     FloatingBottomBar(
                         selectedTab = selectedTab,
                         onTabSelected = { selectedTab = it },
@@ -247,4 +244,4 @@ class MainActivity : ComponentActivity() {
         engine.runCommand("uname -a")
         statusText = "JNI test done"
     }
-}²
+}
