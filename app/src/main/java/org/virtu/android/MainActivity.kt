@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,6 +50,7 @@ class MainActivity : ComponentActivity() {
 
                 Box(modifier = Modifier.fillMaxSize()) {
                     Column(modifier = Modifier.fillMaxSize()) {
+                        // Top App Bar
                         TopAppBar(
                             title = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -58,7 +60,7 @@ class MainActivity : ComponentActivity() {
                                         modifier = Modifier
                                             .size(8.dp)
                                             .background(
-                                                if (statusText == "VM running") Color.Green else Color.Red,
+                                                if (statusText == "VM running") Color.Green else Color.Grey,
                                                 shape = MaterialTheme.shapes.small
                                             )
                                     )
@@ -71,12 +73,13 @@ class MainActivity : ComponentActivity() {
                                 }
                             },
                             actions = {
-                                IconButton(onClick = { /* More options */ }) {
+                                IconButton(onClick = { /* More options later */ }) {
                                     Icon(Icons.Default.MoreVert, contentDescription = "More")
                                 }
                             }
                         )
 
+                        // Content area
                         Box(
                             modifier = Modifier
                                 .weight(1f)
@@ -92,6 +95,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
+                    // Floating Bottom Bar (overlaid at the bottom)
                     FloatingBottomBar(
                         selectedTab = selectedTab,
                         onTabSelected = { selectedTab = it },
@@ -115,7 +119,10 @@ class MainActivity : ComponentActivity() {
         ) {
             Text("Home – VM List", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
-            Text("VM cards with image, name, last run, and controls will appear here.", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+            Text(
+                text = "VM cards with image, name, last run, and controls will appear here.",
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            )
         }
     }
 
@@ -128,7 +135,10 @@ class MainActivity : ComponentActivity() {
         ) {
             Text("Distros", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
-            Text("List of pre‑installed and available distributions.", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+            Text(
+                text = "List of pre‑installed and available distributions.",
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            )
         }
     }
 
@@ -141,8 +151,15 @@ class MainActivity : ComponentActivity() {
         ) {
             Text("Terminal", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
-            Text("root@localhost:~#", fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace, fontSize = 16.sp)
-            Text("(Default root shell via Termux)", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+            Text(
+                text = "root@localhost:~#",
+                fontFamily = FontFamily.Monospace,
+                fontSize = 16.sp
+            )
+            Text(
+                text = "(Default root shell via Termux)",
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            )
         }
     }
 
@@ -155,20 +172,37 @@ class MainActivity : ComponentActivity() {
         ) {
             Text("Tools", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Plugin manager with install via curl/GitHub.", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+            Text(
+                text = "Plugin manager with install via curl/GitHub.",
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            )
         }
     }
 
     @Composable
     fun SettingsContent() {
         Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Text("Settings", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Global settings (theme, dynamic color) and per‑VM settings.", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+            Text(
+                text = "Global settings (theme, dynamic color) and per‑VM settings.",
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // -------- VERSION DISPLAY --------
+            Text(
+                text = "Version ${BuildConfig.VERSION_NAME}",
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+            )
         }
     }
 
@@ -185,7 +219,7 @@ class MainActivity : ComponentActivity() {
         )
     }
 
-    // -------- VM ACTIONS --------
+    // -------- VM ACTIONS (for status dot) --------
 
     private fun startVm() {
         statusText = "VM running"
