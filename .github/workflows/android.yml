@@ -41,7 +41,7 @@ jobs:
           BUGFIX_NUM: ${{ github.run_number }}
 
       - name: Upload Debug APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: app-debug
           path: app/build/outputs/apk/debug/*.apk
@@ -52,7 +52,7 @@ jobs:
           BUGFIX_NUM: ${{ github.run_number }}
 
       - name: Upload Release APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: app-release
           path: app/build/outputs/apk/release/*.apk
