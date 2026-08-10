@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontFamily
-import androidx.comze.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
@@ -27,7 +27,7 @@ import androidx.core.view.WindowCompat
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
 
-    private var selectedTab by mutableStateOf(0)  // 0: Home, 1: Distros, 2: Terminal, 3: Tools, 4: Settings
+    private var selectedTab by mutableStateOf(0)
     private var statusText by mutableStateOf("Ready")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,17 +101,22 @@ class MainActivity : ComponentActivity() {
                                             }
                                             "freeze" -> {
                                                 statusText = "Freezing VM..."
-                                                // TODO: implement freeze
+                                                // TODO
                                             }
                                             "settings" -> {
-                                                // TODO: open per-VM settings
+                                                // TODO
                                             }
                                         }
                                     }
                                 )
                                 1 -> DistrosContent()
                                 2 -> TerminalContent()
-                                3 -> ToolsContent()
+                                3 -> ToolsScreen(
+                                    onPluginInstall = { pluginId, command ->
+                                        statusText = "Installing $pluginId..."
+                                        runCommand(command)
+                                    }
+                                )
                                 4 -> SettingsContent()
                             }
                         }
@@ -129,7 +134,7 @@ class MainActivity : ComponentActivity() {
         hideSystemBars()
     }
 
-    // -------- TAB CONTENT (placeholders) --------
+    // -------- TAB CONTENTS --------
 
     @Composable
     fun DistrosContent() {
@@ -140,10 +145,7 @@ class MainActivity : ComponentActivity() {
         ) {
             Text("Distros", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "List of pre‑installed and available distributions.",
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-            )
+            Text("List of pre‑installed and available distributions.", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
         }
     }
 
@@ -156,49 +158,21 @@ class MainActivity : ComponentActivity() {
         ) {
             Text("Terminal", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "root@localhost:~#",
-                fontFamily = FontFamily.Monospace,
-                fontSize = 16.sp
-            )
-            Text(
-                text = "(Default root shell via Termux)",
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-            )
-        }
-    }
-
-    @Composable
-    fun ToolsContent() {
-        Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text("Tools", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Plugin manager with install via curl/GitHub.",
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-            )
+            Text("root@localhost:~#", fontFamily = FontFamily.Monospace, fontSize = 16.sp)
+            Text("(Default root shell via Termux)", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
         }
     }
 
     @Composable
     fun SettingsContent() {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxSize().padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Text("Settings", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Global settings (theme, dynamic color) and per‑VM settings.",
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-            )
+            Text("Global settings and per‑VM settings.", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
             Spacer(modifier = Modifier.height(32.dp))
             Text(
                 text = "Version ${BuildConfig.VERSION_NAME}",
@@ -221,7 +195,7 @@ class MainActivity : ComponentActivity() {
         )
     }
 
-    // -------- VM ACTIONS (for status dot) --------
+    // -------- VM ACTIONS --------
 
     private fun startVm() {
         statusText = "VM running"
@@ -243,5 +217,19 @@ class MainActivity : ComponentActivity() {
         val engine = VmEngine()
         engine.runCommand("uname -a")
         statusText = "JNI test done"
+    }
+
+    // -------- TOOLS (curl) --------
+
+    private fun runCommand(command: String) {
+        Thread {
+            try {
+                val process = Runtime.getRuntime().exec(arrayOf("sh", "-c", command))
+                val exitCode = process.waitFor()
+                statusText = if (exitCode == 0) "Installation successful" else "Installation failed (exit $exitCode)"
+            } catch (e: Exception) {
+                statusText = "Error: ${e.message}"
+            }
+        }.start()
     }
 }
