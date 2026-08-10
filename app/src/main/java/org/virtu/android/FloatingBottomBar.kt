@@ -20,7 +20,8 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun FloatingBottomBar(
     selectedAction: String,
-    onActionClick: (String) -> Unit
+    onActionClick: (String) -> Unit,
+    modifier: Modifier = Modifier   // Allows parent to control placement
 ) {
     val colorScheme = MaterialTheme.colorScheme
 
@@ -30,17 +31,18 @@ fun FloatingBottomBar(
         Triple("Test", Icons.Default.Build, "Test")
     )
 
+    // Outer Box that fills width and centers content at the bottom
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(bottom = 16.dp),
+            .padding(bottom = 16.dp),   // Adds some space from the bottom edge
         contentAlignment = Alignment.BottomCenter
     ) {
         Surface(
             modifier = Modifier
                 .wrapContentWidth()
                 .padding(horizontal = 16.dp)
-                .widthIn(max = 420.dp)
+                .widthIn(max = 540.dp)
                 .height(64.dp)
                 .padding(horizontal = 8.dp),
             color = colorScheme.surface.copy(alpha = 0.92f),
