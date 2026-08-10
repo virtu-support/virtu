@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="AppTheme" parent="Theme.Material3.Light.NoActionBar">
-        <!-- No overrides – dynamic colors will be used automatically -->
+        <item name="colorPrimary">#4CAF50</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">#C8E6C9</item>
+        <item name="colorOnPrimaryContainer">#1B5E20</item>
+        <item name="colorBackground">#EECD9A</item>
+        <item name="colorOnBackground">#1C1B1F</item>
+        <item name="colorSurface">#FFFFFF</item>
+        <item name="colorOnSurface">#1C1B1F</item>
+        <item name="colorError">#B3261E</item>
+        <item name="colorOnError">#FFFFFF</item>
     </style>
 </resources>
