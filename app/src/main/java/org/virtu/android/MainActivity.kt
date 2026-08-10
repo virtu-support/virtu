@@ -27,7 +27,7 @@ import androidx.core.view.WindowCompat
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
 
-    private var selectedTab by mutableStateOf(0)
+    private var selectedTab by mutableStateOf(0)  // 0: Home, 1: Distros, 2: Terminal, 3: Tools, 4: Settings
     private var statusText by mutableStateOf("Ready")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,11 +53,7 @@ class MainActivity : ComponentActivity() {
                         TopAppBar(
                             title = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(
-                                        text = "virtu",
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onPrimary
-                                    )
+                                    Text("virtu", fontWeight = FontWeight.Bold)
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Box(
                                         modifier = Modifier
@@ -70,16 +66,11 @@ class MainActivity : ComponentActivity() {
                                     Text(
                                         text = statusText,
                                         fontSize = 12.sp,
-                                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                                         modifier = Modifier.padding(start = 4.dp)
                                     )
                                 }
                             },
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                                actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-                            ),
                             actions = {
                                 IconButton(onClick = { /* More options later */ }) {
                                     Icon(Icons.Default.MoreVert, contentDescription = "More")
@@ -110,10 +101,10 @@ class MainActivity : ComponentActivity() {
                                             }
                                             "freeze" -> {
                                                 statusText = "Freezing VM..."
-                                                // TODO
+                                                // TODO: implement freeze
                                             }
                                             "settings" -> {
-                                                // TODO
+                                                // TODO: open per-VM settings
                                             }
                                         }
                                     }
@@ -143,7 +134,7 @@ class MainActivity : ComponentActivity() {
         hideSystemBars()
     }
 
-    // -------- TAB CONTENTS (unchanged) --------
+    // -------- TAB CONTENTS --------
 
     @Composable
     fun DistrosContent() {
