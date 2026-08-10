@@ -49,10 +49,8 @@ fun HomeScreen(
                         .widthIn(max = 500.dp)
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                    shape = RoundedCornerShape(20.dp),          // Material 3 rounded
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 2.dp                 // Soft elevation
-                    ),
+                    shape = RoundedCornerShape(20.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface
                     )
@@ -111,7 +109,7 @@ fun HomeScreen(
                                 "settings" to Icons.Default.Settings
                             ).forEach { (action, icon) ->
                                 IconButton(
-                                    onClick = { onAction(action, vm.id) },
+                                    onClick = { onVmAction(action, vm.id) },
                                     modifier = Modifier.size(36.dp)
                                 ) {
                                     Icon(
