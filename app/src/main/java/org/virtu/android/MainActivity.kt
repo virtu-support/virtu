@@ -7,60 +7,95 @@ import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.runtime.SideEffect
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 
 class MainActivity : ComponentActivity() {
 
-    private var selectedAction = "Start"
+    private var selectedTab by mutableStateOf(0)  // 0: Home, 1: Distros, 2: Terminal, 3: Tools, 4: Settings
+    private var statusText by mutableStateOf("Ready")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         enableEdgeToEdge()
 
         setContent {
-            val backgroundColor = MaterialTheme.colorScheme.background
+            MaterialTheme {
+                val backgroundColor = MaterialTheme.colorScheme.background
+                val view = LocalView.current
+                SideEffect {
+                    val window = (view.context as ComponentActivity).window
+                    window.statusBarColor = backgroundColor.toArgb()
+                    window.navigationBarColor = backgroundColor.toArgb()
+                    val insetsController = WindowCompat.getInsetsController(window, view)
+                    val luminance = backgroundColor.red * 0.299 + backgroundColor.green * 0.587 + backgroundColor.blue * 0.114
+                    insetsController.isAppearanceLightStatusBars = luminance > 0.5
+                    insetsController.isAppearanceLightNavigationBars = luminance > 0.5
+                }
 
-            val view = LocalView.current
-            SideEffect {
-                val window = (view.context as ComponentActivity).window
-                window.statusBarColor = backgroundColor.toArgb()
-                window.navigationBarColor = backgroundColor.toArgb()
-                val insetsController = WindowCompat.getInsetsController(window, view)
-                val luminance = backgroundColor.red * 0.299 + backgroundColor.green * 0.587 + backgroundColor.blue * 0.114
-                insetsController.isAppearanceLightStatusBars = luminance > 0.5
-                insetsController.isAppearanceLightNavigationBars = luminance > 0.5
-            }
-
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = backgroundColor
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .navigationBarsPadding()
-                ) {
-                    FloatingBottomBar(
-                        selectedAction = selectedAction,
-                        onActionClick = { action ->
-                            selectedAction = action
-                            when (action) {
-                                "Start" -> startVm()
-                                "Stop" -> stopVm()
-                                "Test" -> testJni()
+                // Main container
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        // Top App Bar
+                        TopAppBar(
+                            title = {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text("virtu", fontWeight = FontWeight.Bold)
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Box(
+                                        modifier = Modifier
+                                            .size(8.dp)
+                                            .background(
+                                                if (statusText == "VM running") Color.Green else Color.Red,
+                                                shape = MaterialTheme.shapes.small
+                                            )
+                                    )
+                                    Text(
+                                        text = statusText,
+                                        fontSize = 12.sp,
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                                        modifier = Modifier.padding(start = 4.dp)
+                                    )
+                                }
+                            },
+                            actions = {
+                                IconButton(onClick = { /* More options */ }) {
+                                    Icon(Icons.Default.MoreVert, contentDescription = "More")
+                                }
                             }
-                        },
+                        )
+
+                        // Content area
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth()
+                        ) {
+                            when (selectedTab) {
+                                0 -> HomeContent()
+                                1 -> DistrosContent()
+                                2 -> TerminalContent()
+                                3 -> ToolsContent()
+                                4 -> SettingsContent()
+                            }
+                        }
+                    }
+
+                    // Floating Bottom Bar (overlaid at the bottom)
+                    FloatingBottomBar(
+                        selectedTab = selectedTab,
+                        onTabSelected = { selectedTab = it },
                         modifier = Modifier.align(Alignment.BottomCenter)
                     )
                 }
@@ -69,6 +104,76 @@ class MainActivity : ComponentActivity() {
 
         hideSystemBars()
     }
+
+    // -------- TAB CONTENT (placeholders) --------
+
+    @Composable
+    fun HomeContent() {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text("Home – VM List", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("VM cards with image, name, last run, and controls will appear here.", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+        }
+    }
+
+    @Composable
+    fun DistrosContent() {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text("Distros", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("List of pre‑installed and available distributions.", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+        }
+    }
+
+    @Composable
+    fun TerminalContent() {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text("Terminal", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("root@localhost:~#", fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace, fontSize = 16.sp)
+            Text("(Default root shell via Termux)", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+        }
+    }
+
+    @Composable
+    fun ToolsContent() {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text("Tools", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("Plugin manager with install via curl/GitHub.", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+        }
+    }
+
+    @Composable
+    fun SettingsContent() {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text("Settings", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("Global settings (theme, dynamic color) and per‑VM settings.", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+        }
+    }
+
+    // -------- SYSTEM UI --------
 
     private fun hideSystemBars() {
         window.decorView.systemUiVisibility = (
@@ -81,8 +186,10 @@ class MainActivity : ComponentActivity() {
         )
     }
 
+    // -------- VM ACTIONS --------
+
     private fun startVm() {
-        selectedAction = "Start"
+        statusText = "VM running"
         val intent = Intent(this, VmService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent)
@@ -92,13 +199,14 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun stopVm() {
-        selectedAction = "Stop"
+        statusText = "VM stopped"
         stopService(Intent(this, VmService::class.java))
     }
 
     private fun testJni() {
-        selectedAction = "Test"
+        statusText = "Testing JNI..."
         val engine = VmEngine()
         engine.runCommand("uname -a")
+        statusText = "JNI test done"
     }
 }
