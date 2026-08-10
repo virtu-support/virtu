@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
@@ -25,20 +26,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Enable edge-to-edge layout (content draws behind system bars)
         enableEdgeToEdge()
 
         setContent {
-            // Dynamic background color
             val backgroundColor = MaterialTheme.colorScheme.background
 
-            // Update status and navigation bar colors to match background (they'll be hidden anyway)
             val view = LocalView.current
             SideEffect {
                 val window = (view.context as ComponentActivity).window
                 window.statusBarColor = backgroundColor.toArgb()
                 window.navigationBarColor = backgroundColor.toArgb()
-                // Make icons light/dark according to background
                 val insetsController = WindowCompat.getInsetsController(window, view)
                 val luminance = backgroundColor.red * 0.299 + backgroundColor.green * 0.587 + backgroundColor.blue * 0.114
                 insetsController.isAppearanceLightStatusBars = luminance > 0.5
@@ -52,7 +49,7 @@ class MainActivity : ComponentActivity() {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .navigationBarsPadding()  // Keeps the floating bar above the nav bar if it reappears
+                        .navigationBarsPadding()
                 ) {
                     FloatingBottomBar(
                         selectedAction = selectedAction,
@@ -64,13 +61,12 @@ class MainActivity : ComponentActivity() {
                                 "Test" -> testJni()
                             }
                         },
-                        modifier = Modifier.align(Alignment.BottomCenter)   // Forces bottom alignment
+                        modifier = Modifier.align(Alignment.BottomCenter)
                     )
                 }
             }
         }
 
-        // Hide system bars for fullscreen immersive mode
         hideSystemBars()
     }
 
