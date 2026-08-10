@@ -44,100 +44,86 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                VmCard(
-                    vm = vm,
-                    onAction = onVmAction,
+                Card(
                     modifier = Modifier
                         .widthIn(max = 500.dp)
-                        .padding(horizontal = 16.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun VmCard(
-    vm: Vm,
-    onAction: (action: String, vmId: Int) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(28.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .wrapContentWidth()
-                .padding(20.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Surface(
-                modifier = Modifier.size(52.dp),
-                shape = RoundedCornerShape(14.dp),
-                color = MaterialTheme.colorScheme.primaryContainer
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        Icons.Default.Computer,
-                        contentDescription = "VM",
-                        tint = MaterialTheme.colorScheme.primary
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    shape = RoundedCornerShape(20.dp),          // Material 3 rounded
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 2.dp                 // Soft elevation
+                    ),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface
                     )
-                }
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = vm.name,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
-                )
-                Text(
-                    text = "Last run: ${vm.lastRun}",
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                )
-                Text(
-                    text = "Status: ${vm.status}",
-                    fontSize = 12.sp,
-                    color = when (vm.status) {
-                        "running" -> Color.Green
-                        "paused" -> Color.Yellow
-                        else -> Color.Red
-                    }
-                )
-            }
-
-            Row {
-                listOf(
-                    "play" to Icons.Default.PlayArrow,
-                    "resume" to Icons.Default.Refresh,
-                    "stop" to Icons.Default.Stop,
-                    "freeze" to Icons.Default.Pause,
-                    "settings" to Icons.Default.Settings
-                ).forEach { (action, icon) ->
-                    Surface(
-                        modifier = Modifier.size(36.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                        onClick = { onAction(action, vm.id) }
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = action,
-                                modifier = Modifier.size(20.dp),
-                                tint = MaterialTheme.colorScheme.onSurface
+                        Surface(
+                            modifier = Modifier.size(48.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            color = MaterialTheme.colorScheme.primaryContainer
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(
+                                    Icons.Default.Computer,
+                                    contentDescription = "VM",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = vm.name,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                text = "Last run: ${vm.lastRun}",
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            )
+                            Text(
+                                text = "Status: ${vm.status}",
+                                fontSize = 12.sp,
+                                color = when (vm.status) {
+                                    "running" -> Color.Green
+                                    "paused" -> Color.Yellow
+                                    else -> Color.Red
+                                }
                             )
                         }
+
+                        Row {
+                            listOf(
+                                "play" to Icons.Default.PlayArrow,
+                                "resume" to Icons.Default.Refresh,
+                                "stop" to Icons.Default.Stop,
+                                "freeze" to Icons.Default.Pause,
+                                "settings" to Icons.Default.Settings
+                            ).forEach { (action, icon) ->
+                                IconButton(
+                                    onClick = { onAction(action, vm.id) },
+                                    modifier = Modifier.size(36.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = icon,
+                                        contentDescription = action,
+                                        modifier = Modifier.size(20.dp),
+                                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                                    )
+                                }
+                            }
+                        }
                     }
-                    Spacer(modifier = Modifier.width(4.dp))
                 }
             }
         }
