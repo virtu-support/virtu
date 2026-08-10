@@ -50,8 +50,8 @@ fun FloatingBottomBar(
             shape = RoundedCornerShape(36.dp),
             shadowElevation = 0.dp,
             border = androidx.compose.foundation.BorderStroke(
-                width = 1.dp,
-                color = colorScheme.outline.copy(alpha = 0.15f)
+                width = 2.dp,
+                color = colorScheme.outline.copy(alpha = 0.75f)
             )
         ) {
             Row(
