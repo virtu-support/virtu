@@ -15,15 +15,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// -------- DATA CLASS --------
 data class Vm(
     val id: Int,
     val name: String,
     val lastRun: String,
-    val status: String // "running", "stopped", "paused"
+    val status: String
 )
 
-// -------- HOME SCREEN --------
 @Composable
 fun HomeScreen(
     onVmAction: (action: String, vmId: Int) -> Unit,
@@ -49,7 +47,7 @@ fun HomeScreen(
                     vm = vm,
                     onAction = onVmAction,
                     modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
+                        .align(Alignment.CenterHorizontally)   // ✅ Correct alignment
                         .widthIn(max = 500.dp)
                         .padding(horizontal = 16.dp)
                 )
@@ -58,7 +56,6 @@ fun HomeScreen(
     }
 }
 
-// -------- VM CARD --------
 @Composable
 fun VmCard(
     vm: Vm,
