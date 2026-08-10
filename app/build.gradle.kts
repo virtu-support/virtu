@@ -70,12 +70,6 @@ android {
             path = file("src/main/cpp/CMakeLists.txt")
         }
     }
-
-    packagingOptions {
-        resources {
-            excludes += "**/values-night-v8/*"
-        }
-    }
 }
 
 dependencies {
