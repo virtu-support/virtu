@@ -13,7 +13,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
+
+      - name: Remove problematic resources
+        run: |
+          find . -type d -name "values-night-v8" -exec rm -rf {} +
+          rm -rf app/build
 
       - name: Make gradlew executable
         run: chmod +x gradlew
@@ -26,6 +31,9 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
+
+      - name: Clean build cache
+        run: ./gradlew clean --no-build-cache
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug
