@@ -47,7 +47,7 @@ fun HomeScreen(
                     vm = vm,
                     onAction = onVmAction,
                     modifier = Modifier
-                        .align(Alignment.CenterHorizontally)   // ✅ Correct alignment
+                        .align(Alignment.CenterHorizontally)
                         .widthIn(max = 500.dp)
                         .padding(horizontal = 16.dp)
                 )
