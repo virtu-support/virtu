@@ -53,7 +53,11 @@ class MainActivity : ComponentActivity() {
                         TopAppBar(
                             title = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text("virtu", fontWeight = FontWeight.Bold)
+                                    Text(
+                                        text = "virtu",
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onPrimary
+                                    )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Box(
                                         modifier = Modifier
@@ -66,11 +70,16 @@ class MainActivity : ComponentActivity() {
                                     Text(
                                         text = statusText,
                                         fontSize = 12.sp,
-                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
                                         modifier = Modifier.padding(start = 4.dp)
                                     )
                                 }
                             },
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                                actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                            ),
                             actions = {
                                 IconButton(onClick = { /* More options later */ }) {
                                     Icon(Icons.Default.MoreVert, contentDescription = "More")
@@ -134,7 +143,7 @@ class MainActivity : ComponentActivity() {
         hideSystemBars()
     }
 
-    // -------- TAB CONTENTS --------
+    // -------- TAB CONTENTS (unchanged) --------
 
     @Composable
     fun DistrosContent() {
