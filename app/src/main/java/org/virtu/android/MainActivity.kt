@@ -1,6 +1,5 @@
 package org.virtu.android
 
-import org.virtu.android.BuildConfig
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -87,7 +86,31 @@ class MainActivity : ComponentActivity() {
                                 .fillMaxWidth()
                         ) {
                             when (selectedTab) {
-                                0 -> HomeContent()
+                                0 -> HomeScreen(
+                                    onVmAction = { action, vmId ->
+                                        when (action) {
+                                            "play" -> {
+                                                statusText = "Starting VM..."
+                                                startVm()
+                                            }
+                                            "resume" -> {
+                                                statusText = "Resuming VM..."
+                                                startVm()
+                                            }
+                                            "stop" -> {
+                                                statusText = "Stopping VM..."
+                                                stopVm()
+                                            }
+                                            "freeze" -> {
+                                                statusText = "Freezing VM..."
+                                                // TODO: implement freeze
+                                            }
+                                            "settings" -> {
+                                                // TODO: open per-VM settings
+                                            }
+                                        }
+                                    }
+                                )
                                 1 -> DistrosContent()
                                 2 -> TerminalContent()
                                 3 -> ToolsContent()
@@ -110,22 +133,6 @@ class MainActivity : ComponentActivity() {
     }
 
     // -------- TAB CONTENT (placeholders) --------
-
-    @Composable
-    fun HomeContent() {
-        Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text("Home – VM List", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "VM cards with image, name, last run, and controls will appear here.",
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-            )
-        }
-    }
 
     @Composable
     fun DistrosContent() {
@@ -195,10 +202,7 @@ class MainActivity : ComponentActivity() {
                 text = "Global settings (theme, dynamic color) and per‑VM settings.",
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
             )
-
             Spacer(modifier = Modifier.height(32.dp))
-
-            // -------- VERSION DISPLAY --------
             Text(
                 text = "Version ${BuildConfig.VERSION_NAME}",
                 fontSize = 14.sp,
@@ -243,4 +247,4 @@ class MainActivity : ComponentActivity() {
         engine.runCommand("uname -a")
         statusText = "JNI test done"
     }
-}
+}²
