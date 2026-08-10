@@ -42,7 +42,7 @@ fun HomeScreen(
         items(vms) { vm ->
             Box(
                 modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.CenterHorizontally
+                contentAlignment = Alignment.Center
             ) {
                 VmCard(
                     vm = vm,
