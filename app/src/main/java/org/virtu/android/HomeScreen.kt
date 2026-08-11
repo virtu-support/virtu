@@ -46,7 +46,7 @@ fun HomeScreen(
             ) {
                 Card(
                     modifier = Modifier
-                        .widthIn(max = 500.dp)
+                        .widthIn(max = 1000.dp)
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
                     shape = RoundedCornerShape(20.dp),
