@@ -233,3 +233,36 @@ class MainActivity : ComponentActivity() {
         }.start()
     }
 }
+
+// Inside the class, add this function for loading config if not using VmConfig
+// but we already have VmConfig. We'll use it.
+
+@Composable
+fun TerminalContent() {
+    val isVMRunning by remember { mutableStateOf(statusText == "VM running") }
+    val vncPort = remember { mutableIntStateOf(5900) }
+
+    // Load port from config
+    LaunchedEffect(Unit) {
+        val config = VmConfig.load()
+        vncPort.intValue = config.getProperty("VNC_PORT", "5900").toInt()
+    }
+
+    if (isVMRunning) {
+        DisplayScreen(
+            host = "127.0.0.1",
+            port = vncPort.intValue,
+            modifier = Modifier.fillMaxSize()
+        )
+    } else {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text("Terminal / Display", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("Start a VM to see the graphical display here.", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+        }
+    }
+}
