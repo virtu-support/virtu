@@ -13,6 +13,7 @@ class VmService : Service() {
     private val CHANNEL_ID = "VirtuChannel"
     private val NOTIFICATION_ID = 1
     private var vmProcess: Process? = null
+    private var vncPort = 5900
 
     override fun onCreate() {
         super.onCreate()
@@ -27,23 +28,42 @@ class VmService : Service() {
 
     private fun startVmEngine() {
         try {
-            val scriptFile = File(filesDir, "install.sh")
-            assets.open("install.sh").use { input ->
-                scriptFile.outputStream().use { output ->
-                    input.copyTo(output)
-                }
+            val config = VmConfig.load()
+            val qemuBin = config.getProperty("QEMU_BIN", "/data/data/com.termux/files/usr/bin/qemu-system-x86_64")
+            val diskImage = config.getProperty("DISK_PATH", "/storage/emulated/0/virtu/distros/ubuntu/ubuntu.img")
+            val ram = config.getProperty("RAM", "1024")
+            val cpu = config.getProperty("CPU", "2")
+            vncPort = config.getProperty("VNC_PORT", "5900").toInt()
+
+            // Ensure the binary is executable
+            val qemuFile = File(qemuBin)
+            if (!qemuFile.exists()) {
+                // Try using the bundled binary (if you bundle it)
+                // You can copy from assets to internal storage here
+                return
             }
-            scriptFile.setExecutable(true)
+            if (!qemuFile.canExecute()) {
+                qemuFile.setExecutable(true)
+            }
 
             val processBuilder = ProcessBuilder(
-                "sh", "-c", "echo 'Virtu VM started!' && uname -a"
+                qemuBin,
+                "-m", ram,
+                "-smp", "cores=$cpu",
+                "-hda", diskImage,
+                "-vnc", ":$vncPort",
+                "-k", "en-us"
             )
+            processBuilder.redirectErrorStream(true)
             vmProcess = processBuilder.start()
+
+            // Optional: read output (for logging)
             vmProcess?.inputStream?.bufferedReader()?.use {
                 it.lineSequence().forEach { line ->
-                    // Log output
+                    // Can broadcast to UI via LiveData or Flow
                 }
             }
+
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -71,8 +91,10 @@ class VmService : Service() {
     private fun buildNotification(): Notification {
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("virtu")
-            .setContentText("VM is running")
+            .setContentText("VM is running on VNC port $vncPort")
             .setSmallIcon(R.drawable.ic_launcher)
             .build()
     }
+
+    fun getVncPort(): Int = vncPort
 }
